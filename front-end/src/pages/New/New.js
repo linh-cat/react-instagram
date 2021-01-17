@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
-import api from "../../service/api";
+// import api from "../../service/api";
 
 import "./New.css";
 
@@ -13,7 +13,11 @@ function New() {
   };
 
   return (
-    <form className="new-post" onSubmit={handleSubmit(onSubmit)}>
+    <form
+      className="new-post"
+      onSubmit={handleSubmit(onSubmit)}
+      encType="multipart/form-data"
+    >
       <input type="file" ref={register} name="image" />
       <input
         type="text"
