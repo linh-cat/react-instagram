@@ -7,7 +7,7 @@ const PostSchema = new mongoose.Schema(
     description: String,
     hashtags: String,
     image: String,
-    like: {
+    likes: {
       type: Number,
       default: 0,
     },
@@ -16,4 +16,5 @@ const PostSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
 module.exports = mongoose.model("Post", PostSchema);

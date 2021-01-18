@@ -1,52 +1,71 @@
-import React from "react";
-import { useForm } from "react-hook-form";
-// import api from "../../service/api";
+import React, { useState } from "react";
+// import { useHistory } from "react-router-dom";
+import api from "../../service/api";
 
 import "./New.css";
 
 function New() {
-  const { register, errors, handleSubmit } = useForm();
+  const [image, setImage] = useState(null);
+  const [author, setAuthor] = useState("");
+  const [place, setPlace] = useState("");
+  const [description, setDescription] = useState("");
+  const [hashtags, setHashtags] = useState("");
 
-  const onSubmit = async (data) => {
-    // await api.post("posts", data);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const data = {
+      image,
+      author,
+      place,
+      description,
+      hashtags,
+    };
+
     console.log(data);
+
+    await api.post("posts", data);
   };
 
   return (
     <form
       className="new-post"
-      onSubmit={handleSubmit(onSubmit)}
-      encType="multipart/form-data"
+      onSubmit={handleSubmit}
+      method="post"
+      enctype="multipart/form-data"
     >
-      <input type="file" ref={register} name="image" />
+      <input
+        type="file"
+        name="image"
+        onChange={(e) => setImage(e.target.files[0])}
+      />
       <input
         type="text"
         placeholder="Author post"
         name="author"
-        ref={register({ required: true })}
+        onChange={(e) => setAuthor(e.target.value)}
       />
-      {errors.author && <p className="error">Author is required</p>}
+
       <input
         type="text"
         placeholder="Post Location"
         name="place"
-        ref={register({ required: true })}
+        onChange={(e) => setPlace(e.target.value)}
       />
-      {errors.place && <p className="error">Place is required</p>}
+
       <input
         type="text"
         placeholder="Description"
         name="description"
-        ref={register({ required: true })}
+        onChange={(e) => setDescription(e.target.value)}
       />
-      {errors.description && <p className="error">Description is required</p>}
+
       <input
         type="text"
         placeholder="Hashtags"
         name="hashtags"
-        ref={register({ required: true })}
+        onChange={(e) => setHashtags(e.target.value)}
       />
-      {errors.hashtags && <p className="error">Hashtags is required</p>}
+
       <button type="submit">Submit</button>
     </form>
   );
