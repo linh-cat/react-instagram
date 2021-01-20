@@ -8,7 +8,7 @@ function Stories() {
     <section className="stories">
       <figure>
         <picture className="post">
-          <img src={avatar} title="image-story" alt="image-story" />
+          <img src={avatar} title="story" alt="story" />
         </picture>
       </figure>
     </section>

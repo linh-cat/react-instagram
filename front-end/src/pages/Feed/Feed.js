@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./Feed.css";
+import io from "socket.io-client";
+import api from "../../service/api";
 
 import avatar from "../../assets/img/static.jpg";
 import more from "../../assets/more.svg";
@@ -8,41 +10,74 @@ import comment from "../../assets/comment.svg";
 import send from "../../assets/send.svg";
 
 import Stories from "../../components/Stories/Stories";
-import postImage from "../../assets/img/post.jpg";
 
 function Feed() {
+  const [feed, setFeed] = useState([]);
+
+  useEffect(() => {
+    registerSocket();
+
+    async function fetchData() {
+      const response = await api.get("posts");
+
+      setFeed(response.data);
+    }
+
+    fetchData();
+  }, []);
+
+  const registerSocket = () => {
+    const socket = io("http://localhost:3001");
+
+    socket.on("post", (newPost) => {
+      setFeed(newPost);
+    });
+  };
+
+  const handleLike = (id) => {
+    api.post(`/post/${id}/like`);
+    alert(`Like post with id: ${id}`);
+  };
+
   return (
     <>
       <Stories />
       <section className="post-list">
-        <article>
-          <header>
-            <div className="user">
-              <img src={avatar} alt="avatar" title="avatar" />
-              <div className="user-infor">
-                <span>Linh</span>
-                <span className="place">HCM City</span>
+        {feed.map((post) => (
+          <article key={post._id}>
+            <header>
+              <div className="user">
+                <img src={avatar} alt="avatar" title="avatar" />
+                <div className="user-infor">
+                  <span>{post.author}</span>
+                  <span className="place">{post.place}</span>
+                </div>
               </div>
-            </div>
-            <img src={more} alt="More" />
-          </header>
+              <img src={more} alt="More" />
+            </header>
 
-          <img src={postImage} alt="post-image" title="post-image" />
+            <img
+              src={`http://localhost:3001/files/${post.image}`}
+              alt={post.description}
+              title={post.description}
+            />
 
-          <footer>
-            <div className="actions">
-              <button type="button">
-                <img src={like} />
-              </button>
-              <img src={comment} alt="comment" alt="comement" />
-              <img src={send} alt="share" alt="share" />
-            </div>
-            <strong>100 Likes</strong>
-            <p>
-              This is description<span> waiting for love</span>
-            </p>
-          </footer>
-        </article>
+            <footer>
+              <div className="actions">
+                <button type="button" onClick={() => handleLike(post._id)}>
+                  <img src={like} alt="like" title="like" />
+                </button>
+                <img src={comment} alt="comment" title="comment" />
+                <img src={send} alt="share" title="share" />
+              </div>
+              <strong>100 Likes</strong>
+              <p>
+                {post.description}
+                <span>{post.hashtags}</span>
+              </p>
+            </footer>
+          </article>
+        ))}
       </section>
     </>
   );

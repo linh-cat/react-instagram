@@ -1,10 +1,12 @@
 import React, { useState } from "react";
-// import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import api from "../../service/api";
 
 import "./New.css";
 
 function New() {
+  let history = useHistory();
+
   const [image, setImage] = useState(null);
   const [author, setAuthor] = useState("");
   const [place, setPlace] = useState("");
@@ -13,60 +15,53 @@ function New() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const data = {
-      image,
-      author,
-      place,
-      description,
-      hashtags,
-    };
 
-    console.log(data);
+    const data = new FormData();
+
+    data.append("image", image);
+    data.append("author", author);
+    data.append("place", place);
+    data.append("description", description);
+    data.append("hashtags", hashtags);
 
     await api.post("posts", data);
+
+    history.push("/");
   };
 
   return (
-    <form
-      className="new-post"
-      onSubmit={handleSubmit}
-      method="post"
-      enctype="multipart/form-data"
-    >
-      <input
-        type="file"
-        name="image"
-        onChange={(e) => setImage(e.target.files[0])}
-      />
+    <form className="new-post" onSubmit={handleSubmit}>
+      <input type="file" onChange={(e) => setImage(e.target.files[0])} />
       <input
         type="text"
         placeholder="Author post"
-        name="author"
         onChange={(e) => setAuthor(e.target.value)}
       />
 
       <input
         type="text"
         placeholder="Post Location"
-        name="place"
         onChange={(e) => setPlace(e.target.value)}
       />
 
       <input
         type="text"
         placeholder="Description"
-        name="description"
         onChange={(e) => setDescription(e.target.value)}
       />
 
       <input
         type="text"
         placeholder="Hashtags"
-        name="hashtags"
         onChange={(e) => setHashtags(e.target.value)}
       />
 
       <button type="submit">Submit</button>
+      <Link to="/">
+        <button type="button" style={{ width: "389pt" }}>
+          Cancel
+        </button>
+      </Link>
     </form>
   );
 }

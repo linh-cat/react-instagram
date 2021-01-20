@@ -8,6 +8,7 @@ import like from "../../assets/like.svg";
 import send from "../../assets/send.svg";
 import profile from "../../assets/profile.svg";
 import explore from "../../assets/explore.svg";
+import addIcon from "../../assets/plus.svg";
 
 function Header() {
   return (
@@ -23,8 +24,10 @@ function Header() {
           <img src={send} title="Send" alt="Send" />
           <img src={explore} title="Explore" alt="Explore" />
           <img src={like} title="Like" alt="Like" />
+
+          <img src={profile} title="profile" alt="profile" />
           <Link to="/new">
-            <img src={profile} title="profile" alt="profile" />
+            <img src={addIcon} alt="add-new-post" title="add-new-post" />
           </Link>
         </div>
       </div>
