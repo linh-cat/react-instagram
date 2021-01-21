@@ -9,8 +9,11 @@ const routes = new express.Router();
 const upload = multer(uploadConfig);
 
 routes.get("/posts", PostController.index);
+
 routes.post("/posts", upload.single("image"), PostController.store);
 
-routes.post("/posts/:id/like", LikeController.store);
+// routes.post("/posts/:id/like", LikeController.store);
+routes.post("/posts/:id/update", PostController.updateById);
+routes.post("/posts/:id/delete", PostController.deleteById);
 
 module.exports = routes;

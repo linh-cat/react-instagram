@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import "./Feed.css";
-import io from "socket.io-client";
+// import io from "socket.io-client";
 import api from "../../service/api";
 
 import avatar from "../../assets/img/static.jpg";
@@ -12,10 +13,13 @@ import send from "../../assets/send.svg";
 import Stories from "../../components/Stories/Stories";
 
 function Feed() {
+  let history = useHistory();
+
   const [feed, setFeed] = useState([]);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    registerSocket();
+    // registerSocket();
 
     async function fetchData() {
       const response = await api.get("posts");
@@ -26,17 +30,26 @@ function Feed() {
     fetchData();
   }, []);
 
-  const registerSocket = () => {
-    const socket = io("http://localhost:3001");
+  // const registerSocket = () => {
+  //   const socket = io("http://localhost:3001");
 
-    socket.on("post", (newPost) => {
-      setFeed(newPost);
-    });
-  };
+  //   socket.on("post", (newPost) => {
+  //     setFeed(newPost);
+  //   });
+  // };
 
   const handleLike = (id) => {
-    api.post(`/post/${id}/like`);
+    api.post(`/posts/${id}/like`);
     alert(`Like post with id: ${id}`);
+  };
+
+  const handleClickDelete = (id) => {
+    api.post(`/posts/${id}/delete`);
+    window.location.reload();
+  };
+
+  const handleClickEdit = (id) => {
+    history.push(`/post/${id}`);
   };
 
   return (
@@ -53,15 +66,28 @@ function Feed() {
                   <span className="place">{post.place}</span>
                 </div>
               </div>
-              <img src={more} alt="More" />
-            </header>
 
+              <img
+                src={more}
+                alt="More"
+                onClick={() => {
+                  setOpen(!open);
+                }}
+              />
+            </header>
+            <div className={open ? "open pop-up" : "pop-up hide"}>
+              <p className="edit" onClick={() => handleClickEdit(post._id)}>
+                Edit
+              </p>
+              <p className="delete" onClick={() => handleClickDelete(post._id)}>
+                Delete
+              </p>
+            </div>
             <img
               src={`http://localhost:3001/files/${post.image}`}
               alt={post.description}
               title={post.description}
             />
-
             <footer>
               <div className="actions">
                 <button type="button" onClick={() => handleLike(post._id)}>

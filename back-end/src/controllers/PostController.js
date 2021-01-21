@@ -35,4 +35,15 @@ module.exports = {
     req.io.emit("post", post);
     return res.json(post);
   },
+
+  async deleteById(req, res) {
+    const post = await Post.findById(req.params.id);
+    post.deleteOne();
+    res.json(post);
+  },
+
+  async updateById(req, res) {
+    const post = await Post.findById(req.params.id);
+    console.log(req.body);
+  },
 };
